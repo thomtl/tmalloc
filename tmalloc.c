@@ -29,14 +29,27 @@ static void* tmalloc_morecore(void* addr, intptr_t increment){
 }
 
 static struct tmalloc_header* tmalloc_get_free_block(size_t size){
-    // first fit
-
+    #if (ALLOCATION_TYPE == 0) // first fit
     struct tmalloc_header* curr = head;
     while(curr){
         if(curr->is_free && curr->size >= size) return curr;
         curr = curr->next;
     }
     return NULL;
+    #elif (ALLOCATION_TYPE == 1) // best fit
+    struct tmalloc_header* curr = head;
+    struct tmalloc_header* tmp = NULL;
+    while(curr){
+        if(curr->is_free && curr->size == size) return curr;
+        if(curr->is_free && curr->size > size) tmp = curr;
+        curr = curr->next;
+    }
+    return tmp;
+    #else
+    (void)(size);
+    perror("tmalloc.c: undefined allocation type\n");
+    return NULL;
+    #endif
 }
 
 void* tmalloc(size_t size){

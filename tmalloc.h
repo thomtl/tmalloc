@@ -7,7 +7,7 @@
 #define TMALLOC
 
 // Use the mmap function instead of sbrk
-//#define USE_MMAP
+#define USE_MMAP
 
 // Use spinlocks to keep the allocator thread-safe
 #define MULTITHREADING_PROTECTION
@@ -15,6 +15,17 @@
 // Set errno if something goes wrong
 #define USE_ERRNO
 
+/* Use allocation type
+   0 = first fit
+   1 = best fit
+*/
+#define ALLOCATION_TYPE 1
+
+#if (ALLOCATION_TYPE > 1)
+#error "Undefined allocation type"
+#endif
+
+#include <stdio.h>
 #include <stddef.h> // size_t
 #include <string.h> // memset / memcpy
 #include <stdint.h> // uint32_t / uint64_t
