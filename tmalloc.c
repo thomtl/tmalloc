@@ -76,6 +76,7 @@ void* tmalloc(size_t size){
     header->size = size;
     header->is_free = false;
     header->next = NULL;
+    header->magic = TMALLOC_MAGIC;
     if(!head) head = header;
     if(tail) tail->next = header;
     tail = header;
@@ -88,7 +89,10 @@ void tfree(void* ptr){
 
     tmalloc_multithreading_lock(&tmalloc_global_mutex);
     struct tmalloc_header* header = (struct tmalloc_header*)ptr - 1;
-
+    if(header->magic != TMALLOC_MAGIC){
+        perror("tmalloc.c: header->magic is not equal to TMALLOC_MAGIC\n");
+        return;
+    }
     #ifdef USE_MMAP
 
     if(header == head) head = header->next;
