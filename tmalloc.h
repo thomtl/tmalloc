@@ -60,7 +60,7 @@
 
 #define TMALLOC_MAGIC 0xBEEFCAFE
 
-#define TMALLOC_FLAGS_MMAP (1 << 0)
+#define TMALLOC_HEADER_FLAGS_MMAP (1 << 0)
 
 
 struct tmalloc_header {

@@ -96,7 +96,7 @@ void* tmalloc(size_t size){
     header->magic = TMALLOC_MAGIC;
 
     uint32_t flags = 0;
-    if(mmapped) flags |= TMALLOC_FLAGS_MMAP;
+    if(mmapped) flags |= TMALLOC_HEADER_FLAGS_MMAP;
     header->flags = flags;
 
     if(!head) head = header;
@@ -120,7 +120,7 @@ void tfree(void* ptr){
 
     #ifdef USE_MMAP
 
-    if(header->flags & TMALLOC_FLAGS_MMAP){
+    if(header->flags & TMALLOC_HEADER_FLAGS_MMAP){
         if(header == head) head = header->next;
         else {
             if(header == tail){
