@@ -19,7 +19,7 @@
    0 = first fit
    1 = best fit
 */
-#define ALLOCATION_TYPE 1
+#define ALLOCATION_TYPE 0
 
 #if (ALLOCATION_TYPE > 1)
 #error "Undefined allocation type"
@@ -33,6 +33,8 @@
 
 #ifdef USE_MMAP
 #include <sys/mman.h> // mmap
+#include <unistd.h> // sbrk
+#define TMALLOC_MMAP_THRESHOLD (128 * 1024)
 #else
 #include <unistd.h> // sbrk
 #endif
@@ -58,10 +60,14 @@
 
 #define TMALLOC_MAGIC 0xBEEFCAFE
 
+#define TMALLOC_FLAGS_MMAP (1 << 0)
+
+
 struct tmalloc_header {
     size_t size;
     bool is_free;
     uint32_t magic;
+    uint32_t flags;
     struct tmalloc_header* next;
     uint64_t off_by_one_error_protection;
 };
