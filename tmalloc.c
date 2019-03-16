@@ -73,6 +73,10 @@ void* tmalloc(size_t size){
 
     struct tmalloc_header* header = tmalloc_get_free_block(size);
     if(header){
+        if(header->magic != TMALLOC_MAGIC){
+            perror("tmalloc.c: Found header magic mismatch\n");
+            return NULL;
+        }
         header->is_free = false;
         tmalloc_multithreading_unlock(&tmalloc_global_mutex);
         return (void*)(header + 1);
